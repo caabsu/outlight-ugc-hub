@@ -9,6 +9,7 @@ import { QuickAddCreatorForm } from "@/components/creators/quick-add-form";
 import { CampaignForm } from "@/components/campaigns/campaign-form";
 import { Card } from "@/components/ui/card";
 import { getCampaignOverview, getCreatorRoster } from "@/server/services/dashboard";
+import type { CreatorRow } from "@/components/dashboard/creator-table";
 
 export default async function DashboardPage() {
   const [campaigns, creators] = await Promise.all([
@@ -19,7 +20,11 @@ export default async function DashboardPage() {
   const stats = [
     {
       title: "Creators in production",
-      value: String(creators.filter((c) => c.status === "PRODUCING" || c.status === "ONBOARDING").length),
+      value: String(
+        creators.filter(
+          (c: CreatorRow) => c.status === "PRODUCING" || c.status === "ONBOARDING",
+        ).length,
+      ),
       trend: { value: "+18%", label: "vs last sprint", up: true },
       icon: <LucideUsers className="h-5 w-5 text-slate-400" />,
     },
