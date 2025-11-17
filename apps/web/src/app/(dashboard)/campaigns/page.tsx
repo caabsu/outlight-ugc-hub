@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { CampaignForm } from "@/components/campaigns/campaign-form";
 import { getCampaignOverview } from "@/server/services/dashboard";
 
+type CampaignOverview = Awaited<ReturnType<typeof getCampaignOverview>>[number];
+
 export default async function CampaignsPage() {
   const campaigns = await getCampaignOverview();
 
@@ -34,7 +36,7 @@ export default async function CampaignsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {campaigns.map((campaign) => (
+              {campaigns.map((campaign: CampaignOverview) => (
                 <tr key={campaign.id}>
                   <td className="py-4">
                     <div className="flex flex-col">
