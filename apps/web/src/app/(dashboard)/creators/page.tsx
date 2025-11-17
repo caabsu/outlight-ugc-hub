@@ -8,6 +8,7 @@ import {
   toggleShortlistAction,
 } from "@/server/actions/creators";
 import { getCreatorRoster } from "@/server/services/dashboard";
+import type { CreatorRow } from "@/components/dashboard/creator-table";
 
 export default async function CreatorsPage() {
   const creators = await getCreatorRoster();
@@ -38,7 +39,7 @@ export default async function CreatorsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {creators.map((creator) => (
+              {creators.map((creator: CreatorRow) => (
                 <tr key={creator.id}>
                   <td className="py-4">
                     <div className="flex flex-col">
