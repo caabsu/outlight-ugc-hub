@@ -4,6 +4,10 @@ import { AssetUploadForm } from "@/components/assets/asset-upload-form";
 import { getAssetPerformance } from "@/server/services/metrics";
 import { getCreatorRoster } from "@/server/services/dashboard";
 
+type AssetPerformance = Awaited<
+  ReturnType<typeof getAssetPerformance>
+>[number];
+
 export default async function AssetsPage() {
   const [assets, creators] = await Promise.all([
     getAssetPerformance(),
@@ -25,7 +29,7 @@ export default async function AssetsPage() {
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="glass-panel border-none bg-white/90 lg:col-span-2">
             <div className="grid gap-4 md:grid-cols-2">
-              {assets.map((asset) => (
+              {assets.map((asset: AssetPerformance) => (
                 <div
                   key={asset.id}
                   className="rounded-2xl border border-slate-100 p-4"
