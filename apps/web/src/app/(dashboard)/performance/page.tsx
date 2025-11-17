@@ -3,10 +3,14 @@ import { Card } from "@/components/ui/card";
 import { PerformanceChart } from "@/components/performance/performance-chart";
 import { getAssetPerformance } from "@/server/services/metrics";
 
+type AssetPerformance = Awaited<
+  ReturnType<typeof getAssetPerformance>
+>[number];
+
 export default async function PerformancePage() {
   const assets = await getAssetPerformance();
 
-  const chart = assets.map((asset, index) => ({
+  const chart = assets.map((asset: AssetPerformance, index) => ({
     label: `Asset ${index + 1}`,
     spend: asset.spend,
     revenue: asset.revenue,
@@ -39,7 +43,7 @@ export default async function PerformancePage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {assets.map((asset) => (
+              {assets.map((asset: AssetPerformance) => (
                 <tr key={asset.id}>
                   <td className="py-3">{asset.creatorName}</td>
                   <td className="py-3">
