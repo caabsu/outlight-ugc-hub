@@ -8,6 +8,11 @@ import { ImportRosterForm } from "@/components/dashboard/import-roster-form";
 import { AIBriefCard } from "@/components/dashboard/ai-brief-card";
 import { getCampaignDetail } from "@/server/services/dashboard";
 
+type CampaignDetail = NonNullable<
+  Awaited<ReturnType<typeof getCampaignDetail>>
+>;
+type CampaignCreator = CampaignDetail["campaignCreators"][number];
+
 export default async function CampaignDetailPage({
   params,
 }: {
@@ -41,8 +46,9 @@ export default async function CampaignDetailPage({
                 <p className="text-sm text-slate-500">
                   {campaign.campaignCreators.length} total,{" "}
                   {
-                    campaign.campaignCreators.filter((creator) => creator.shortlisted)
-                      .length
+                    campaign.campaignCreators.filter(
+                      (creator: CampaignCreator) => creator.shortlisted,
+                    ).length
                   }{" "}
                   shortlisted
                 </p>
@@ -55,7 +61,7 @@ export default async function CampaignDetailPage({
               </Link>
             </div>
             <div className="mt-4 space-y-4">
-              {campaign.campaignCreators.map((row) => (
+              {campaign.campaignCreators.map((row: CampaignCreator) => (
                 <div
                   key={row.id}
                   className="rounded-2xl border border-slate-100 px-4 py-3"
