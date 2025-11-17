@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Workspace {
+  id                 String     @id @default(cuid())
+  name               String
+  slug               String     @unique
+  gmail              String
+  googleClientId     String?
+  googleClientSecret String?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  campaigns Campaign[]
+  creators  Creator[]
+  users     WorkspaceUser[]
+}
+
+model WorkspaceUser {
+  id           String    @id @default(cuid())
+  workspace    Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId  String
+  email        String
+  role         UserRole  @default(MANAGER)
+  createdAt    DateTime  @default(now())
+  lastSignedIn DateTime?
+
+  @@unique([workspaceId, email])
+}
+
+model Campaign {
+  id             String           @id @default(cuid())
+  workspace      Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId    String
+  name           String
+  brand          String
+  status         CampaignStatus   @default(DRAFT)
+  brief          String?
+  goal           String?
+  budget         Float?
+  startDate      DateTime?
+  endDate        DateTime?
+  metaAdAccount  String?
+  productSku     String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  campaignCreators CampaignCreator[]
+  importJobs       ImportJob[]
+}
+
+model Creator {
+  id               String           @id @default(cuid())
+  workspace        Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId      String
+  name             String
+  platform         String
+  gender           String?
+  profileUrl       String          @unique
+  handle           String?
+  followers        Int?
+  engagementRate   Float?
+  avgVideoViews    Int?
+  medianVideoViews Int?
+  rate             Float?
+  notes            String?
+  contactEmail     String?
+  instagramUrl     String?
+  tiktokUrl        String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  campaignCreators CampaignCreator[]
+}
+
+model CampaignCreator {
+  id            String         @id @default(cuid())
+  campaign      Campaign       @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId    String
+  creator       Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  creatorId     String
+  status        CreatorStatus  @default(LEAD)
+  shortlisted   Boolean        @default(false)
+  price         Float?
+  dateAdded     DateTime?      @default(now())
+  source        String?        @default("manual")
+  deletedAt     DateTime?
+  notes         String?
+
+  briefs        CreatorBrief[]
+  assets        Asset[]
+  shopifyOrders ShopifyOrder[]
+
+  @@unique([campaignId, creatorId])
+}
+
+model CreatorBrief {
+  id                 String           @id @default(cuid())
+  campaignCreator    CampaignCreator  @relation(fields: [campaignCreatorId], references: [id], onDelete: Cascade)
+  campaignCreatorId  String
+  tonePreferences    String?
+  promptContext      String?
+  briefMarkdown      String
+  message            String
+  createdBy          String?
+  createdAt          DateTime         @default(now())
+  approvedAt         DateTime?
+}
+
+model Asset {
+  id                  String         @id @default(cuid())
+  campaignCreator     CampaignCreator @relation(fields: [campaignCreatorId], references: [id], onDelete: Cascade)
+  campaignCreatorId   String
+  type                String
+  storagePath         String
+  thumbnailUrl        String?
+  metaAdCreativeId    String?
+  uploadedAt          DateTime        @default(now())
+
+  metrics AssetMetric[]
+}
+
+model AssetMetric {
+  id         String    @id @default(cuid())
+  asset      Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  assetId    String
+  platform   String
+  impressions Int?
+  clicks      Int?
+  spend       Float?
+  orders      Int?
+  revenue     Float?
+  cpa         Float?
+  roas        Float?
+  syncedAt    DateTime @default(now())
+}
+
+model ShopifyOrder {
+  id                  String          @id @default(cuid())
+  campaignCreator     CampaignCreator @relation(fields: [campaignCreatorId], references: [id], onDelete: Cascade)
+  campaignCreatorId   String
+  orderNumber         String
+  fulfillmentStatus   String?
+  trackingNumber      String?
+  seventeenTrackStatus String?
+  lastSyncedAt        DateTime?
+  placedAt            DateTime?
+  notes               String?
+
+  @@unique([orderNumber, campaignCreatorId])
+}
+
+model ImportJob {
+  id           String        @id @default(cuid())
+  campaign     Campaign      @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId   String
+  filename     String
+  status       ImportStatus  @default(PENDING)
+  summaryJson  Json?
+  errorLog     String?
+  createdAt    DateTime      @default(now())
+  completedAt  DateTime?
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  VIEWER
+}
+
+enum CampaignStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  ON_HOLD
+  ARCHIVED
+}
+
+enum CreatorStatus {
+  LEAD
+  OUTREACH
+  ONBOARDING
+  PRODUCING
+  DELIVERED
+  NOT_INTERESTED
+  ARCHIVED
+}
+
+enum ImportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
