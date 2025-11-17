@@ -8,8 +8,10 @@ export async function GET() {
     },
   });
 
+  type Campaign = (typeof campaigns)[number];
+
   return NextResponse.json(
-    campaigns.map((campaign) => ({
+    campaigns.map((campaign: Campaign) => ({
       id: campaign.id,
       name: campaign.name,
       status: campaign.status,
