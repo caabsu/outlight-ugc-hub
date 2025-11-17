@@ -138,14 +138,12 @@ export async function toggleShortlist({
 }
 
 export async function toggleShortlistAction(
-  prevState: unknown,
   formData: FormData,
-) {
+): Promise<void> {
   const id = formData.get("id")?.toString();
   const shortlisted = formData.get("shortlisted") === "true";
-  if (!id) return { ok: false };
+  if (!id) return;
   await toggleShortlist({ id, shortlisted });
-  return { ok: true };
 }
 
 export async function bulkDeleteRejected(campaignId: string) {
@@ -157,11 +155,9 @@ export async function bulkDeleteRejected(campaignId: string) {
 }
 
 export async function bulkDeleteRejectedAction(
-  prevState: unknown,
   formData: FormData,
-) {
+): Promise<void> {
   const campaignId = formData.get("campaignId")?.toString();
-  if (!campaignId) return { ok: false };
+  if (!campaignId) return;
   await bulkDeleteRejected(campaignId);
-  return { ok: true };
 }

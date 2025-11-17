@@ -10,7 +10,11 @@ export async function POST(request: Request) {
       model: "gpt-4.1-mini",
       input: prompt,
     });
-    const raw = response.output?.[0]?.content?.[0]?.text;
+    const raw = (response.output as Array<
+      { content?: Array<{ text?: string }> }
+    > | undefined)
+      ?.[0]
+      ?.content?.[0]?.text;
     const payload = raw ? JSON.parse(raw) : {};
     return NextResponse.json(payload);
   } catch (error) {

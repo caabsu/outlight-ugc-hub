@@ -9,10 +9,10 @@ const importSchema = z.object({
   campaignId: z.string().optional(),
 });
 
-export async function importCreators(prevState: unknown, formData: FormData) {
+export async function importCreators(formData: FormData): Promise<void> {
   const file = formData.get("file");
   if (!(file instanceof File)) {
-    return { ok: false, error: "Missing file" };
+    return;
   }
 
   const parsed = importSchema.safeParse({
@@ -20,7 +20,7 @@ export async function importCreators(prevState: unknown, formData: FormData) {
   });
 
   if (!parsed.success) {
-    return { ok: false, error: "Invalid campaign reference" };
+    return;
   }
 
   const bytes = await file.arrayBuffer();
@@ -139,6 +139,4 @@ export async function importCreators(prevState: unknown, formData: FormData) {
 
   revalidatePath("/creators");
   revalidatePath("/");
-
-  return { ok: true, imported, shortlisted };
 }

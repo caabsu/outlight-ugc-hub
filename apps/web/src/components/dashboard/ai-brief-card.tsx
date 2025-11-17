@@ -1,14 +1,14 @@
 "use client";
 
 import { useActionState } from "react";
-import { generateBrief } from "@/server/actions/ai";
+import { generateBrief, type GenerateBriefState } from "@/server/actions/ai";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
-const initialState = { ok: false, brief: "", message: "", error: "" };
+const initialState: GenerateBriefState = { ok: false };
 
 export const AIBriefCard = () => {
   const [state, formAction, pending] = useActionState(generateBrief, initialState);

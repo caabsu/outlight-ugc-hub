@@ -10,7 +10,12 @@ const assetSchema = z.object({
   type: z.string().default("VIDEO"),
 });
 
-export async function uploadAsset(prevState: unknown, formData: FormData) {
+export type UploadAssetState = { ok: boolean; path?: string; error?: string };
+
+export async function uploadAsset(
+  prevState: UploadAssetState,
+  formData: FormData,
+): Promise<UploadAssetState> {
   const file = formData.get("file");
   if (!(file instanceof File)) {
     return { ok: false, error: "Missing asset file" };

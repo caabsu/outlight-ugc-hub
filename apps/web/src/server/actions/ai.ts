@@ -15,7 +15,17 @@ const aiSchema = z.object({
   callToAction: z.string().min(3),
 });
 
-export async function generateBrief(prevState: unknown, formData: FormData) {
+export type GenerateBriefState = {
+  ok: boolean;
+  brief?: string;
+  message?: string;
+  error?: string;
+};
+
+export async function generateBrief(
+  prevState: GenerateBriefState,
+  formData: FormData,
+): Promise<GenerateBriefState> {
   const parsed = aiSchema.safeParse({
     campaignCreatorId: formData.get("campaignCreatorId"),
     creatorName: formData.get("creatorName"),
@@ -40,7 +50,11 @@ export async function generateBrief(prevState: unknown, formData: FormData) {
       input: prompt,
     });
 
-    const raw = response.output?.[0]?.content?.[0]?.text;
+    const raw = (response.output as Array<
+      { content?: Array<{ text?: string }> }
+    > | undefined)
+      ?.[0]
+      ?.content?.[0]?.text;
     if (raw) {
       const parsedJson = JSON.parse(raw);
       brief = parsedJson.brief ?? "";
