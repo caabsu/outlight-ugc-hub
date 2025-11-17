@@ -12,6 +12,7 @@ type CampaignDetail = NonNullable<
   Awaited<ReturnType<typeof getCampaignDetail>>
 >;
 type CampaignCreator = CampaignDetail["campaignCreators"][number];
+type CampaignAsset = CampaignCreator["assets"][number];
 
 export default async function CampaignDetailPage({
   params,
@@ -107,8 +108,8 @@ export default async function CampaignDetailPage({
           <Card className="glass-panel border-none bg-white/90">
             <h3 className="text-lg font-semibold">Assets</h3>
             <div className="mt-4 grid grid-cols-2 gap-4">
-              {campaign.campaignCreators.flatMap((row) =>
-                row.assets.map((asset) => (
+              {campaign.campaignCreators.flatMap((row: CampaignCreator) =>
+                row.assets.map((asset: CampaignAsset) => (
                   <div
                     key={asset.id}
                     className="rounded-2xl border border-slate-100 p-4"
