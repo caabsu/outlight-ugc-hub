@@ -8,9 +8,9 @@ type AssetPerformance = Awaited<
 >[number];
 
 export default async function PerformancePage() {
-  const assets = await getAssetPerformance();
+  const assets: AssetPerformance[] = await getAssetPerformance();
 
-  const chart = assets.map((asset: AssetPerformance, index) => ({
+  const chart = assets.map((asset: AssetPerformance, index: number) => ({
     label: `Asset ${index + 1}`,
     spend: asset.spend,
     revenue: asset.revenue,
