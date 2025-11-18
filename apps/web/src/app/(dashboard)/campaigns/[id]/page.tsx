@@ -1,18 +1,8 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ImportRosterForm } from "@/components/dashboard/import-roster-form";
-import { AIBriefCard } from "@/components/dashboard/ai-brief-card";
 import { getCampaignDetail } from "@/server/services/dashboard";
-
-type CampaignDetail = NonNullable<
-  Awaited<ReturnType<typeof getCampaignDetail>>
->;
-type CampaignCreator = CampaignDetail["campaignCreators"][number];
-type CampaignAsset = CampaignCreator["assets"][number];
 
 export default async function CampaignDetailPage({
   params,
@@ -29,106 +19,41 @@ export default async function CampaignDetailPage({
       <div className="flex flex-col gap-6">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs uppercase text-slate-500">
+            <p className="text-xs uppercase text-[var(--text-muted)]">
               {campaign.brand}
             </p>
-            <h1 className="text-3xl font-semibold text-slate-900">
+            <h1 className="text-3xl font-semibold text-[var(--text-primary)]">
               {campaign.name}
             </h1>
-            <p className="text-slate-500">{campaign.goal}</p>
+            <p className="text-[var(--text-muted)]">{campaign.goal ?? "No goal set yet."}</p>
           </div>
           <Badge>{campaign.status}</Badge>
         </div>
-        <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80 lg:col-span-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-semibold">Creators</h2>
-                <p className="text-sm text-slate-500">
-                  {campaign.campaignCreators.length} total,{" "}
-                  {
-                    campaign.campaignCreators.filter(
-                      (creator: CampaignCreator) => creator.shortlisted,
-                    ).length
-                  }{" "}
-                  shortlisted
-                </p>
-              </div>
-              <Link
-                href="/creators"
-                className="text-sm font-semibold text-slate-900 underline-offset-4 hover:underline"
-              >
-                Manage roster
-              </Link>
-            </div>
-            <div className="mt-4 space-y-4">
-              {campaign.campaignCreators.map((row: CampaignCreator) => (
-                <div
-                  key={row.id}
-                  className="rounded-2xl border border-slate-100 px-4 py-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-base font-semibold text-slate-900">
-                        {row.creator.name}
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        {row.creator.platform} • {row.creator.followers?.toLocaleString()} followers
-                      </p>
-                    </div>
-                    <Badge variant={row.shortlisted ? "success" : "neutral"}>
-                      {row.shortlisted ? "Shortlisted" : row.status}
-                    </Badge>
-                  </div>
-                  {row.briefs.length > 0 && (
-                    <p className="mt-3 line-clamp-2 text-sm text-slate-600">
-                      {row.briefs[0].briefMarkdown}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Card>
-          <div className="space-y-6">
-            <ImportRosterForm />
-            <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
-              <h3 className="text-lg font-semibold">Bulk actions</h3>
-              <p className="text-sm text-slate-500">
-                Clean non-shortlisted creators or trigger payment batches.
-              </p>
-              <div className="mt-4 flex flex-col gap-3">
-                <Button variant="outline">Delete non-shortlisted</Button>
-                <Button variant="outline">Send status survey</Button>
-              </div>
-            </Card>
-          </div>
-        </div>
-        <div className="grid gap-6 lg:grid-cols-2">
-          <AIBriefCard />
-          <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
-            <h3 className="text-lg font-semibold">Assets</h3>
-            <div className="mt-4 grid grid-cols-2 gap-4">
-              {campaign.campaignCreators.flatMap((row: CampaignCreator) =>
-                row.assets.map((asset: CampaignAsset) => (
-                  <div
-                    key={asset.id}
-                    className="rounded-2xl border border-slate-100 p-4"
-                  >
-                    <p className="text-sm font-semibold text-slate-900">
-                      {row.creator.name}
-                    </p>
-                    <p className="text-xs text-slate-500">{asset.type}</p>
-                    <p className="mt-2 text-sm text-slate-500">
-                      Uploaded {asset.uploadedAt.toDateString()}
-                    </p>
-                  </div>
-                )),
-              )}
-            </div>
-          </Card>
-        </div>
+
+        <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
+          <h3 className="text-lg font-semibold">Timeline</h3>
+          <p className="text-sm text-[var(--text-muted)]">
+            Start: {campaign.startDate || "TBD"} • End: {campaign.endDate || "TBD"}
+          </p>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">
+            Budget: {campaign.budget ? `$${campaign.budget.toLocaleString()}` : "Not set"}
+          </p>
+        </Card>
+
+        <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
+          <h3 className="text-lg font-semibold">Creators</h3>
+          <p className="text-sm text-[var(--text-muted)]">
+            Creator assignments are not tracked in this MVP. Add creators from the Creators page.
+          </p>
+        </Card>
+
+        <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
+          <h3 className="text-lg font-semibold">Assets</h3>
+          <p className="text-sm text-[var(--text-muted)]">
+            Assets for this campaign are not tracked in this MVP. Add assets from the Assets page.
+          </p>
+        </Card>
       </div>
     </DashboardShell>
   );
 }
-
