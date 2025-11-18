@@ -1,10 +1,10 @@
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getLogisticsBoard } from "@/server/services/metrics";
+import { getLogisticsBoard, type LogisticsRow } from "@/server/services/metrics";
 
 export default async function LogisticsPage() {
-  const rows = await getLogisticsBoard();
+  const rows: LogisticsRow[] = await getLogisticsBoard();
 
   return (
     <DashboardShell>
@@ -35,9 +35,9 @@ export default async function LogisticsPage() {
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
                 {rows.map((row, idx) => (
-                  <tr key={row.id ?? idx}>
-                    <td className="py-4">{row.creatorName}</td>
-                    <td className="py-4 text-[var(--text-muted)]">{row.campaignName}</td>
+                  <tr key={row.id ?? `row-${idx}`}>
+                    <td className="py-4">{row.creatorName ?? "Creator"}</td>
+                    <td className="py-4 text-[var(--text-muted)]">{row.campaignName ?? "Campaign"}</td>
                     <td className="py-4">{row.orderNumber ?? "--"}</td>
                     <td className="py-4">
                       <Badge variant="neutral">

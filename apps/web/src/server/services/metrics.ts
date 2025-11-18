@@ -1,5 +1,15 @@
 import { getAssets, getCampaigns, getCreators } from "@/data/store";
 
+export type LogisticsRow = {
+  id?: string;
+  creatorName?: string;
+  campaignName?: string;
+  orderNumber?: string | null;
+  fulfillmentStatus?: string | null;
+  trackingStatus?: string | null;
+  trackingNote?: string | null;
+};
+
 export async function getAssetPerformance(campaignId?: string) {
   const assets = getAssets().filter(
     (asset) => !campaignId || asset.campaignId === campaignId,
@@ -29,5 +39,18 @@ export async function getAssetPerformance(campaignId?: string) {
 }
 
 export async function getLogisticsBoard() {
-  return [];
+  const campaignsById = new Map(getCampaigns().map((c) => [c.id, c]));
+  const creatorsById = new Map(getCreators().map((c) => [c.id, c]));
+
+  // No logistics tracking in the MVP. Return an empty typed array for safety.
+  const rows: LogisticsRow[] = [];
+  return rows.map((row) => ({
+    id: row.id,
+    creatorName: row.creatorName ?? (row.id ? creatorsById.get(row.id)?.name : undefined),
+    campaignName: row.campaignName,
+    orderNumber: row.orderNumber ?? null,
+    fulfillmentStatus: row.fulfillmentStatus ?? null,
+    trackingStatus: row.trackingStatus ?? null,
+    trackingNote: row.trackingNote ?? null,
+  }));
 }
