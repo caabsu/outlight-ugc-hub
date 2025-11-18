@@ -27,7 +27,7 @@ export default async function AssetsPage() {
           </p>
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="glass-panel border-none bg-white/90 lg:col-span-2">
+          <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80 lg:col-span-2">
             <div className="grid gap-4 md:grid-cols-2">
               {assets.map((asset: AssetPerformance) => (
                 <div
@@ -64,7 +64,7 @@ export default async function AssetsPage() {
               ))}
             </div>
           </Card>
-          <Card className="glass-panel border-none bg-white/90">
+          <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
             <h3 className="text-lg font-semibold">Upload asset</h3>
             {defaultCreatorId ? (
               <AssetUploadForm campaignCreatorId={defaultCreatorId} />
@@ -79,3 +79,4 @@ export default async function AssetsPage() {
     </DashboardShell>
   );
 }
+

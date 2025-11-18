@@ -25,7 +25,7 @@ const statusToBadge: Record<string, BadgeProps["variant"]> = {
 };
 
 export const CreatorTable = ({ creators }: { creators: CreatorRow[] }) => (
-  <Card className="glass-panel border-none bg-white/90">
+  <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
     <div className="flex items-center justify-between">
       <div>
         <h3 className="text-lg font-semibold">Hired creators</h3>
@@ -83,3 +83,4 @@ export const CreatorTable = ({ creators }: { creators: CreatorRow[] }) => (
     </div>
   </Card>
 );
+

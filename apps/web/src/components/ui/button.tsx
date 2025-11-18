@@ -5,12 +5,13 @@ import { cn } from "@/lib/utils";
 
 const buttonVariants = {
   primary:
-    "bg-gradient-to-r from-slate-900 to-slate-700 text-white hover:from-slate-800 hover:to-slate-600 shadow-sm",
+    "bg-[var(--accent)] text-white shadow-[0_14px_45px_rgba(37,99,235,0.25)] transition-transform hover:-translate-y-0.5 hover:bg-[var(--accent-strong)] active:translate-y-0 dark:shadow-[0_16px_50px_rgba(37,99,235,0.35)]",
   secondary:
-    "bg-white/5 text-white border border-white/10 hover:bg-white/10",
+    "border border-[var(--border-subtle)] bg-[var(--bg-muted)] text-[var(--text-primary)] hover:border-[var(--accent-strong)]/60 hover:text-[var(--text-primary)] dark:bg-slate-900/60",
   outline:
-    "border border-slate-300 text-slate-900 hover:bg-slate-50 dark:border-slate-700 dark:text-white",
-  ghost: "text-slate-600 hover:bg-slate-100 dark:text-slate-200",
+    "border border-[var(--border-subtle)] text-[var(--text-primary)] hover:bg-[var(--bg-muted)] dark:border-slate-700 dark:text-white",
+  ghost:
+    "text-[var(--text-muted)] hover:bg-[var(--bg-muted)] dark:text-slate-200 dark:hover:bg-slate-800",
 };
 
 export type ButtonVariant = keyof typeof buttonVariants;

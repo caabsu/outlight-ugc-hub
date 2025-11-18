@@ -63,11 +63,11 @@ export default async function DashboardPage() {
           </div>
           <div className="space-y-6">
             <ImportRosterForm />
-            <Card className="glass-panel border-none bg-white/90">
+            <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
               <h3 className="text-lg font-semibold">Quick add creator</h3>
               <QuickAddCreatorForm />
             </Card>
-            <Card className="glass-panel border-none bg-white/90">
+            <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
               <h3 className="text-lg font-semibold">New campaign</h3>
               <CampaignForm />
             </Card>
@@ -75,7 +75,7 @@ export default async function DashboardPage() {
         </section>
         <section className="grid gap-6 lg:grid-cols-2">
           <AIBriefCard />
-          <Card className="glass-panel border-none bg-white/90">
+          <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
             <h3 className="text-lg font-semibold">Ops snapshot</h3>
             <p className="text-sm text-slate-500">
               Shopify fulfilment, content deadlines, and pending payments.
@@ -115,3 +115,4 @@ export default async function DashboardPage() {
     </DashboardShell>
   );
 }
+

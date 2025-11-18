@@ -17,7 +17,7 @@ const SubmitButton = () => {
 
 export const ImportRosterForm = () => {
   return (
-    <Card className="glass-panel border-none bg-white/90">
+    <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
       <form action={importCreators} className="space-y-3">
         <div>
           <h3 className="text-lg font-semibold">Excel roster</h3>
@@ -31,3 +31,4 @@ export const ImportRosterForm = () => {
     </Card>
   );
 };
+

@@ -27,7 +27,7 @@ export default async function CreatorsPage() {
             </p>
           </div>
         </div>
-        <Card className="glass-panel border-none bg-white/90">
+        <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs uppercase text-slate-400">
@@ -85,7 +85,7 @@ export default async function CreatorsPage() {
           </table>
         </Card>
         <div className="grid gap-6 lg:grid-cols-2">
-          <Card className="glass-panel border-none bg-white/90">
+          <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
             <h3 className="text-lg font-semibold">Bulk hygiene</h3>
             <p className="text-sm text-slate-500">
               Remove non-shortlisted creators to keep the CRM focused.
@@ -103,7 +103,7 @@ export default async function CreatorsPage() {
               </p>
             )}
           </Card>
-          <Card className="glass-panel border-none bg-white/90">
+          <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
             <h3 className="text-lg font-semibold">Manual add</h3>
             <QuickAddCreatorForm />
           </Card>
@@ -112,3 +112,4 @@ export default async function CreatorsPage() {
     </DashboardShell>
   );
 }
+

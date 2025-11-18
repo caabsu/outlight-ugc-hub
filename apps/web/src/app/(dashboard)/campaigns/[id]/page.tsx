@@ -40,7 +40,7 @@ export default async function CampaignDetailPage({
           <Badge>{campaign.status}</Badge>
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="glass-panel border-none bg-white/90 lg:col-span-2">
+          <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80 lg:col-span-2">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-semibold">Creators</h2>
@@ -91,7 +91,7 @@ export default async function CampaignDetailPage({
           </Card>
           <div className="space-y-6">
             <ImportRosterForm />
-            <Card className="glass-panel border-none bg-white/90">
+            <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
               <h3 className="text-lg font-semibold">Bulk actions</h3>
               <p className="text-sm text-slate-500">
                 Clean non-shortlisted creators or trigger payment batches.
@@ -105,7 +105,7 @@ export default async function CampaignDetailPage({
         </div>
         <div className="grid gap-6 lg:grid-cols-2">
           <AIBriefCard />
-          <Card className="glass-panel border-none bg-white/90">
+          <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
             <h3 className="text-lg font-semibold">Assets</h3>
             <div className="mt-4 grid grid-cols-2 gap-4">
               {campaign.campaignCreators.flatMap((row: CampaignCreator) =>
@@ -131,3 +131,4 @@ export default async function CampaignDetailPage({
     </DashboardShell>
   );
 }
+

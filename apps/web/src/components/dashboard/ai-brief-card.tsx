@@ -18,8 +18,7 @@ export const AIBriefCard = () => {
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">AI brief assistant</h3>
         <p className="text-sm text-slate-300">
-          Feed context, tone, and deliverables—get a ready-to-send outreach email
-          plus shot list in seconds.
+          Feed context, tone, and deliverables - get a ready-to-send outreach email plus shot list in seconds.
         </p>
         <form action={formAction} className="space-y-3">
           <Input name="creatorName" placeholder="Creator name" required />
@@ -66,3 +65,4 @@ export const AIBriefCard = () => {
     </Card>
   );
 };
+

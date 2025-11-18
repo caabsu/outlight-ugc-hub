@@ -28,7 +28,7 @@ const statusMap: Record<string, { label: string; variant: BadgeProps["variant"] 
 };
 
 export const CampaignList = ({ campaigns }: { campaigns: CampaignSummary[] }) => (
-  <Card className="glass-panel border-none bg-white/90">
+  <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
     <div className="flex items-center justify-between">
       <div>
         <h3 className="text-lg font-semibold">Active campaigns</h3>
@@ -84,3 +84,4 @@ export const CampaignList = ({ campaigns }: { campaigns: CampaignSummary[] }) =>
     </div>
   </Card>
 );
+

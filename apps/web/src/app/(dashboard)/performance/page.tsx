@@ -27,11 +27,11 @@ export default async function PerformancePage() {
             Combine Meta Ads data with Shopify orders to understand creator ROI.
           </p>
         </div>
-        <Card className="glass-panel border-none bg-white/90">
+        <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
           <h3 className="text-lg font-semibold">Spend vs revenue</h3>
           <PerformanceChart data={chart} />
         </Card>
-        <Card className="glass-panel border-none bg-white/90">
+        <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
           <h3 className="text-lg font-semibold">Leaderboard</h3>
           <table className="mt-4 w-full text-sm">
             <thead>
@@ -62,3 +62,4 @@ export default async function PerformancePage() {
     </DashboardShell>
   );
 }
+

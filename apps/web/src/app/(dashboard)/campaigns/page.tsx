@@ -23,7 +23,7 @@ export default async function CampaignsPage() {
           </div>
           <Button>Launch new campaign</Button>
         </div>
-        <Card className="glass-panel border-none bg-white/90">
+        <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs uppercase text-slate-400">
@@ -69,7 +69,7 @@ export default async function CampaignsPage() {
             </tbody>
           </table>
         </Card>
-        <Card className="glass-panel border-none bg-white/90">
+        <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
           <h2 className="text-xl font-semibold">Create campaign</h2>
           <CampaignForm />
         </Card>
@@ -77,3 +77,4 @@ export default async function CampaignsPage() {
     </DashboardShell>
   );
 }
+

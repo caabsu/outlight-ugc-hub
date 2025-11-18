@@ -4,52 +4,53 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_LINKS } from "@/data/constants";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { LucidePlus, LucideSparkles } from "lucide-react";
 
 export const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full flex-col justify-between border-r border-slate-100 bg-white/70 px-4 py-6">
+    <aside className="flex h-full flex-col gap-8 border-r border-[var(--border-subtle)] bg-[var(--panel)] px-5 py-6 backdrop-blur">
       <div className="space-y-8">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 rounded-full bg-[var(--bg-muted)] px-3 py-1 text-xs font-semibold text-[var(--accent-strong)] dark:bg-slate-800">
+            <LucideSparkles className="h-4 w-4" />
             Outlight
+          </div>
+          <h1 className="text-2xl font-semibold text-[var(--text-primary)]">
+            UGC Hub
+          </h1>
+          <p className="text-sm text-[var(--text-muted)]">
+            Campaigns, creators, and delivery in one calmer workspace.
           </p>
-          <h1 className="text-2xl font-semibold text-slate-900">UGC Hub</h1>
         </div>
         <nav className="space-y-1 text-sm font-medium">
-          {NAV_LINKS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center rounded-lg px-3 py-2 text-slate-600 hover:bg-slate-100",
-                pathname === item.href &&
-                  "bg-slate-900 text-white hover:bg-slate-900",
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center justify-between rounded-xl px-3 py-2 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-muted)] hover:text-[var(--text-primary)] dark:hover:bg-slate-800",
+                  active &&
+                    "bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] text-white shadow-lg shadow-indigo-500/15 hover:text-white",
+                )}
+              >
+                <span>{item.label}</span>
+                {active && <LucidePlus className="h-4 w-4 rotate-45 opacity-60" />}
+              </Link>
+            );
+          })}
         </nav>
       </div>
-      <div className="space-y-3 rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-900 to-slate-700 p-4 text-white shadow-lg">
-        <p className="text-sm font-medium">
-          Need an onboarding checklist for a new creator?
+      <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-muted)] px-4 py-3">
+        <p className="text-xs font-medium text-[var(--text-muted)]">
+          Residency: Brand Ops
         </p>
-        <Button
-          variant="secondary"
-          className="w-full justify-center bg-white/20 text-white hover:bg-white/30"
-        >
-          <LucideSparkles className="h-4 w-4" />
-          Launch Ops Copilot
-        </Button>
-        <Button variant="primary" className="w-full justify-center bg-white text-slate-900 hover:bg-slate-100">
-          <LucidePlus className="h-4 w-4" />
-          New Campaign
-        </Button>
+        <p className="text-sm font-semibold text-[var(--text-primary)]">
+          Quarter: Q4 \u2022 Collaborative
+        </p>
       </div>
     </aside>
   );
