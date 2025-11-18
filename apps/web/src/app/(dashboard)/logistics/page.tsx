@@ -34,8 +34,8 @@ export default async function LogisticsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--border-subtle)]">
-                {rows.map((row) => (
-                  <tr key={row.id}>
+                {rows.map((row, idx) => (
+                  <tr key={row.id ?? idx}>
                     <td className="py-4">{row.creatorName}</td>
                     <td className="py-4 text-[var(--text-muted)]">{row.campaignName}</td>
                     <td className="py-4">{row.orderNumber ?? "--"}</td>
