@@ -66,8 +66,14 @@ body {
   color: #94a3b8 !important;
 }
 
+:root.dark .text-slate-300,
+:root.dark .text-slate-200 {
+  color: #cbd5e1 !important;
+}
+
 :root.dark .border-slate-100,
-:root.dark .border-slate-200 {
+:root.dark .border-slate-200,
+:root.dark .border-slate-300 {
   border-color: var(--border-subtle) !important;
 }
 

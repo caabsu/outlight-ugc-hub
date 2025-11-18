@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { sampleCampaigns, sampleCreators } from "@/data/sample-creators";
 
 export async function getCampaignOverview() {
   try {
@@ -14,10 +13,6 @@ export async function getCampaignOverview() {
       },
       orderBy: { createdAt: "desc" },
     });
-
-    if (!campaigns.length) {
-      return sampleCampaigns;
-    }
 
     return campaigns.map((campaign) => ({
       id: campaign.id,
@@ -38,7 +33,7 @@ export async function getCampaignOverview() {
     }));
   } catch (error) {
     console.error("getCampaignOverview fallback", error);
-    return sampleCampaigns;
+    return [];
   }
 }
 
@@ -55,13 +50,6 @@ export async function getCreatorRoster() {
       },
       orderBy: { dateAdded: "desc" },
     });
-
-    if (!creators.length) {
-      return sampleCreators.map((creator) => ({
-        ...creator,
-        campaignName: sampleCampaigns[0]?.name ?? "Campaign",
-      }));
-    }
 
     return creators.map((row) => ({
       id: row.id,
@@ -81,11 +69,7 @@ export async function getCreatorRoster() {
     }));
   } catch (error) {
     console.error("getCreatorRoster fallback", error);
-    return sampleCreators.map((creator) => ({
-      ...creator,
-      campaignName: sampleCampaigns[0]?.name ?? "Campaign",
-      campaignId: sampleCampaigns[0]?.id ?? "campaign",
-    }));
+    return [];
   }
 }
 

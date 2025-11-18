@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { fetchMetaInsights } from "@/lib/meta";
 import { fetchShopifyOrder } from "@/lib/shopify";
 import { fetchTrackingStatus } from "@/lib/seventeentrack";
-import { sampleAssets, sampleLogistics } from "@/data/sample-creators";
 
 export async function getAssetPerformance(campaignId?: string) {
   try {
@@ -31,10 +30,6 @@ export async function getAssetPerformance(campaignId?: string) {
       ? await fetchMetaInsights(metaIds)
       : [];
 
-    if (!assets.length) {
-      return sampleAssets;
-    }
-
     return assets.map((asset) => {
       const insight = insights.find(
         (metric) => metric.creativeId === asset.metaAdCreativeId,
@@ -59,7 +54,7 @@ export async function getAssetPerformance(campaignId?: string) {
     });
   } catch (error) {
     console.error("getAssetPerformance fallback", error);
-    return sampleAssets;
+    return [];
   }
 }
 
@@ -75,10 +70,6 @@ export async function getLogisticsBoard(campaignId?: string) {
         shopifyOrders: true,
       },
     });
-
-    if (!rows.length) {
-      return sampleLogistics;
-    }
 
     return Promise.all(
       rows.map(async (row) => {
@@ -109,6 +100,6 @@ export async function getLogisticsBoard(campaignId?: string) {
     );
   } catch (error) {
     console.error("getLogisticsBoard fallback", error);
-    return sampleLogistics;
+    return [];
   }
 }

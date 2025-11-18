@@ -19,57 +19,63 @@ export default async function AssetsPage() {
     <DashboardShell>
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-2xl font-semibold text-slate-900">
+          <h1 className="text-2xl font-semibold text-[var(--text-primary)]">
             Asset Library
           </h1>
-          <p className="text-slate-500">
+          <p className="text-[var(--text-muted)]">
             Every deliverable synced to Supabase storage and Meta Ads.
           </p>
         </div>
         <div className="grid gap-6 lg:grid-cols-3">
           <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80 lg:col-span-2">
-            <div className="grid gap-4 md:grid-cols-2">
-              {assets.map((asset: AssetPerformance) => (
-                <div
-                  key={asset.id}
-                  className="rounded-2xl border border-slate-100 p-4"
-                >
-                  <p className="text-sm font-semibold text-slate-900">
-                    {asset.creatorName}
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    {asset.campaignName} • {asset.type}
-                  </p>
-                  <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
-                    <div>
-                      <p className="text-slate-400">Impr.</p>
-                      <p className="font-semibold text-slate-900">
-                        {asset.impressions.toLocaleString()}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-slate-400">Spend</p>${" "}
-                      <p className="font-semibold text-slate-900">
-                        {asset.spend.toLocaleString()}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-slate-400">ROAS</p>
-                      <p className="font-semibold text-slate-900">
-                        {asset.roas?.toFixed(2)}
-                      </p>
+            {assets.length === 0 ? (
+              <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-muted)] px-4 py-6 text-sm text-[var(--text-muted)]">
+                No assets yet. Upload your first asset to start tracking performance.
+              </div>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2">
+                {assets.map((asset: AssetPerformance) => (
+                  <div
+                    key={asset.id}
+                    className="rounded-2xl border border-[var(--border-subtle)] p-4"
+                  >
+                    <p className="text-sm font-semibold text-[var(--text-primary)]">
+                      {asset.creatorName}
+                    </p>
+                    <p className="text-xs text-[var(--text-muted)]">
+                      {asset.campaignName} • {asset.type}
+                    </p>
+                    <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
+                      <div>
+                        <p className="text-[var(--text-muted)]">Impr.</p>
+                        <p className="font-semibold text-[var(--text-primary)]">
+                          {asset.impressions.toLocaleString()}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-[var(--text-muted)]">Spend</p>
+                        <p className="font-semibold text-[var(--text-primary)]">
+                          ${asset.spend.toLocaleString()}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-[var(--text-muted)]">ROAS</p>
+                        <p className="font-semibold text-[var(--text-primary)]">
+                          {asset.roas?.toFixed(2)}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </Card>
           <Card className="glass-panel border-none bg-[var(--card)] dark:bg-slate-900/80">
             <h3 className="text-lg font-semibold">Upload asset</h3>
             {defaultCreatorId ? (
               <AssetUploadForm campaignCreatorId={defaultCreatorId} />
             ) : (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-[var(--text-muted)]">
                 Add a creator before uploading assets.
               </p>
             )}
@@ -79,4 +85,3 @@ export default async function AssetsPage() {
     </DashboardShell>
   );
 }
-
