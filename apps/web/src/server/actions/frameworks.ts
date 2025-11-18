@@ -19,33 +19,26 @@ const frameworkSchema = z.object({
   direction: z.string().min(5),
 });
 
-export async function setBaseFrameworkAction(formData: FormData) {
+export async function setBaseFrameworkAction(formData: FormData): Promise<void> {
   const parsed = baseSchema.safeParse({
     latex: formData.get("latex"),
   });
-  if (!parsed.success) {
-    return { ok: false, error: "Base framework too short." };
-  }
+  if (!parsed.success) return;
 
   setBaseFramework(parsed.data.latex);
   revalidatePath("/creators");
-  return { ok: true };
 }
 
-export async function createFrameworkAction(formData: FormData) {
+export async function createFrameworkAction(formData: FormData): Promise<void> {
   const parsed = frameworkSchema.safeParse({
     creatorId: formData.get("creatorId"),
     direction: formData.get("direction"),
   });
 
-  if (!parsed.success) {
-    return { ok: false, error: "Provide a creator and direction." };
-  }
+  if (!parsed.success) return;
 
   const creator = getCreators().find((c) => c.id === parsed.data.creatorId);
-  if (!creator) {
-    return { ok: false, error: "Creator not found." };
-  }
+  if (!creator) return;
 
   const base = getBaseFramework();
   const latex = String.raw`\documentclass{article}
@@ -80,13 +73,11 @@ ${base}
   });
 
   revalidatePath("/creators");
-  return { ok: true };
 }
 
-export async function deleteFrameworkAction(formData: FormData) {
+export async function deleteFrameworkAction(formData: FormData): Promise<void> {
   const id = formData.get("id")?.toString();
-  if (!id) return { ok: false, error: "Missing framework id." };
+  if (!id) return;
   deleteFramework(id);
   revalidatePath("/creators");
-  return { ok: true };
 }
