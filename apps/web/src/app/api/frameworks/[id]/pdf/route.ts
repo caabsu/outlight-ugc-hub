@@ -4,9 +4,10 @@ import { getFrameworks } from "@/data/store";
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
-  const framework = getFrameworks().find((f) => f.id === params.id);
+  const { id } = await context.params;
+  const framework = getFrameworks().find((f) => f.id === id);
   if (!framework) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
