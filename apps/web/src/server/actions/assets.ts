@@ -2,53 +2,58 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-import { supabaseServer } from "@/lib/supabase";
+import { addAsset, getCampaigns, getCreators } from "@/data/store";
 
 const assetSchema = z.object({
-  campaignCreatorId: z.string(),
+  title: z.string().min(1),
   type: z.string().default("VIDEO"),
+  campaignId: z.string().optional(),
+  creatorId: z.string().optional(),
+  impressions: z.string().optional(),
+  spend: z.string().optional(),
+  revenue: z.string().optional(),
 });
 
-export type UploadAssetState = { ok: boolean; path?: string; error?: string };
+export type UploadAssetState = { ok: boolean; error?: string };
 
 export async function uploadAsset(
   prevState: UploadAssetState,
   formData: FormData,
 ): Promise<UploadAssetState> {
-  const file = formData.get("file");
-  if (!(file instanceof File)) {
-    return { ok: false, error: "Missing asset file" };
-  }
-
   const parsed = assetSchema.safeParse({
-    campaignCreatorId: formData.get("campaignCreatorId"),
-    type: formData.get("type") ?? "VIDEO",
+    title: formData.get("title"),
+    type: formData.get("type"),
+    campaignId: formData.get("campaignId"),
+    creatorId: formData.get("creatorId"),
+    impressions: formData.get("impressions"),
+    spend: formData.get("spend"),
+    revenue: formData.get("revenue"),
   });
 
   if (!parsed.success) {
     return { ok: false, error: "Invalid payload" };
   }
 
-  const supabase = supabaseServer();
-  const fileName = `${parsed.data.campaignCreatorId}/${Date.now()}-${file.name}`;
-  const buffer = Buffer.from(await file.arrayBuffer());
+  const campaigns = getCampaigns();
+  const creators = getCreators();
 
-  await supabase.storage.from("ugc-assets").upload(fileName, buffer, {
-    contentType: file.type,
-    upsert: true,
-  });
+  const campaignId = campaigns.find((c) => c.id === parsed.data.campaignId)?.id;
+  const creatorId = creators.find((c) => c.id === parsed.data.creatorId)?.id;
 
-  await prisma.asset.create({
-    data: {
-      campaignCreatorId: parsed.data.campaignCreatorId,
-      type: parsed.data.type,
-      storagePath: fileName,
-    },
+  addAsset({
+    title: parsed.data.title,
+    type: parsed.data.type,
+    campaignId: campaignId ?? null,
+    creatorId: creatorId ?? null,
+    impressions: parsed.data.impressions
+      ? Number(parsed.data.impressions)
+      : undefined,
+    spend: parsed.data.spend ? Number(parsed.data.spend) : undefined,
+    revenue: parsed.data.revenue ? Number(parsed.data.revenue) : undefined,
   });
 
   revalidatePath("/assets");
-  revalidatePath("/creators");
+  revalidatePath("/");
 
-  return { ok: true, path: fileName };
+  return { ok: true };
 }

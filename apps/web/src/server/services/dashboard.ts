@@ -1,31 +1,21 @@
-import { prisma } from "@/lib/prisma";
+import { getCampaigns, getCreators } from "@/data/store";
 
 export async function getCampaignOverview() {
   try {
-    const campaigns = await prisma.campaign.findMany({
-      include: {
-        campaignCreators: {
-          select: { shortlisted: true },
-        },
-        _count: {
-          select: { campaignCreators: true },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    const campaigns = getCampaigns();
+    const creators = getCreators();
 
     return campaigns.map((campaign) => ({
       id: campaign.id,
       name: campaign.name,
       status: campaign.status,
-      startDate: campaign.startDate?.toISOString() ?? "",
-      endDate: campaign.endDate?.toISOString() ?? "",
+      startDate: campaign.startDate ?? "",
+      endDate: campaign.endDate ?? "",
       brand: campaign.brand,
       goal: campaign.goal,
       metrics: {
-        creators: campaign._count.campaignCreators,
-        shortlisted: campaign.campaignCreators.filter((c) => c.shortlisted)
-          .length,
+        creators: creators.filter((c) => c.campaignId === campaign.id).length,
+        shortlisted: 0,
         assetsLive: 0,
         spend: campaign.budget ?? 0,
         revenue: 0,
@@ -39,33 +29,26 @@ export async function getCampaignOverview() {
 
 export async function getCreatorRoster() {
   try {
-    const creators = await prisma.campaignCreator.findMany({
-      include: {
-        creator: true,
-        campaign: true,
-        briefs: {
-          orderBy: { createdAt: "desc" },
-          take: 1,
-        },
-      },
-      orderBy: { dateAdded: "desc" },
-    });
+    const creators = getCreators();
+    const campaignsById = new Map(getCampaigns().map((c) => [c.id, c]));
 
-    return creators.map((row) => ({
-      id: row.id,
-      name: row.creator.name,
-      platform: row.creator.platform,
-      gender: row.creator.gender,
-      profileUrl: row.creator.profileUrl,
-      followers: row.creator.followers ?? undefined,
-      engagementRate: row.creator.engagementRate ?? undefined,
-      status: row.status,
-      shortlisted: row.shortlisted,
-      dateAdded: row.dateAdded?.toISOString(),
-      price: row.price ?? undefined,
-      campaignName: row.campaign.name,
-      campaignId: row.campaignId,
-      lastBrief: row.briefs.at(0)?.briefMarkdown,
+    return creators.map((creator) => ({
+      id: creator.id,
+      name: creator.name,
+      platform: creator.platform,
+      gender: undefined,
+      profileUrl: creator.profileUrl,
+      followers: creator.followers ?? undefined,
+      engagementRate: creator.engagementRate ?? undefined,
+      status: creator.status,
+      shortlisted: false,
+      dateAdded: undefined,
+      price: undefined,
+      campaignName: creator.campaignId
+        ? campaignsById.get(creator.campaignId)?.name
+        : undefined,
+      campaignId: creator.campaignId ?? undefined,
+      lastBrief: undefined,
     }));
   } catch (error) {
     console.error("getCreatorRoster fallback", error);
@@ -74,28 +57,5 @@ export async function getCreatorRoster() {
 }
 
 export async function getCampaignDetail(id: string) {
-  const campaign = await prisma.campaign.findUnique({
-    where: { id },
-    include: {
-      campaignCreators: {
-        include: {
-          creator: true,
-          briefs: {
-            orderBy: { createdAt: "desc" },
-            take: 1,
-          },
-          assets: {
-            take: 4,
-            orderBy: { uploadedAt: "desc" },
-          },
-        },
-      },
-    },
-  });
-
-  if (!campaign) {
-    return null;
-  }
-
-  return campaign;
+  return getCampaigns().find((c) => c.id === id) ?? null;
 }

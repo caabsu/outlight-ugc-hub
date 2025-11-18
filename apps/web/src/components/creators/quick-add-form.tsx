@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { addCreator } from "@/server/actions/creators";
+import { addCreatorAction } from "@/server/actions/creators";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 const initialState = { ok: false, error: "" };
 
 export const QuickAddCreatorForm = () => {
-  const [state, action, pending] = useActionState(addCreator, initialState);
+  const [state, action, pending] = useActionState(addCreatorAction, initialState);
 
   return (
     <form action={action} className="space-y-3">

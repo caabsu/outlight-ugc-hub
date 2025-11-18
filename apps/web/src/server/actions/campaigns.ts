@@ -2,10 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
+import { addCampaign } from "@/data/store";
 
 const campaignSchema = z.object({
-  id: z.string().optional(),
   name: z.string().min(2),
   brand: z.string().min(1),
   goal: z.string().optional(),
@@ -17,7 +16,6 @@ const campaignSchema = z.object({
 
 export async function saveCampaign(prevState: unknown, formData: FormData) {
   const parsed = campaignSchema.safeParse({
-    id: formData.get("id")?.toString(),
     name: formData.get("name"),
     brand: formData.get("brand") ?? "Outlight",
     goal: formData.get("goal"),
@@ -31,40 +29,14 @@ export async function saveCampaign(prevState: unknown, formData: FormData) {
     return { ok: false, error: "Invalid campaign payload" };
   }
 
-  const payload = parsed.data;
-
-  const workspace = await prisma.workspace.upsert({
-    where: { slug: "outlight-support" },
-    create: {
-      slug: "outlight-support",
-      name: "Outlight Support",
-      gmail: "support@outlight.us",
-    },
-    update: {},
-  });
-
-  await prisma.campaign.upsert({
-    where: { id: payload.id ?? "" },
-    update: {
-      name: payload.name,
-      brand: payload.brand,
-      goal: payload.goal,
-      status: payload.status,
-      startDate: payload.startDate ? new Date(payload.startDate) : null,
-      endDate: payload.endDate ? new Date(payload.endDate) : null,
-      budget: payload.budget ? Number(payload.budget) : null,
-      workspaceId: workspace.id,
-    },
-    create: {
-      name: payload.name,
-      brand: payload.brand,
-      goal: payload.goal,
-      status: payload.status,
-      startDate: payload.startDate ? new Date(payload.startDate) : null,
-      endDate: payload.endDate ? new Date(payload.endDate) : null,
-      budget: payload.budget ? Number(payload.budget) : null,
-      workspaceId: workspace.id,
-    },
+  addCampaign({
+    name: parsed.data.name,
+    brand: parsed.data.brand,
+    goal: parsed.data.goal,
+    status: parsed.data.status,
+    startDate: parsed.data.startDate || null,
+    endDate: parsed.data.endDate || null,
+    budget: parsed.data.budget ? Number(parsed.data.budget) : null,
   });
 
   revalidatePath("/");
