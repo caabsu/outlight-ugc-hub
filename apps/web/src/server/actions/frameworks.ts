@@ -19,10 +19,7 @@ const frameworkSchema = z.object({
   direction: z.string().min(5),
 });
 
-export async function setBaseFrameworkAction(
-  prevState: unknown,
-  formData: FormData,
-) {
+export async function setBaseFrameworkAction(formData: FormData) {
   const parsed = baseSchema.safeParse({
     latex: formData.get("latex"),
   });
@@ -35,10 +32,7 @@ export async function setBaseFrameworkAction(
   return { ok: true };
 }
 
-export async function createFrameworkAction(
-  prevState: unknown,
-  formData: FormData,
-) {
+export async function createFrameworkAction(formData: FormData) {
   const parsed = frameworkSchema.safeParse({
     creatorId: formData.get("creatorId"),
     direction: formData.get("direction"),
@@ -89,10 +83,7 @@ ${base}
   return { ok: true };
 }
 
-export async function deleteFrameworkAction(
-  prevState: unknown,
-  formData: FormData,
-) {
+export async function deleteFrameworkAction(formData: FormData) {
   const id = formData.get("id")?.toString();
   if (!id) return { ok: false, error: "Missing framework id." };
   deleteFramework(id);
