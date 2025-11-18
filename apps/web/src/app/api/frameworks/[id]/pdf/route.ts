@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import PDFDocument from "pdfkit";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 import { getFrameworks } from "@/data/store";
 
 export async function GET(
@@ -11,30 +11,43 @@ export async function GET(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  const doc = new PDFDocument({ margin: 50 });
-  const chunks: Buffer[] = [];
+  const pdf = await PDFDocument.create();
+  const font = await pdf.embedFont(StandardFonts.Helvetica);
+  const mono = await pdf.embedFont(StandardFonts.Courier);
+  const page = pdf.addPage([612, 792]); // Letter
 
-  doc.on("data", (chunk) => chunks.push(chunk as Buffer));
-  doc.on("end", () => {});
+  const { width, height } = page.getSize();
+  const margin = 50;
+  let y = height - margin;
 
-  doc.fontSize(16).text(framework.title, { underline: true });
-  doc.moveDown();
-  doc.fontSize(10).text("LaTeX source", { oblique: true });
-  doc.moveDown();
-  doc
-    .font("Courier")
-    .fontSize(9)
-    .text(framework.latex, {
-      lineGap: 2,
-    });
+  const addText = (
+    text: string,
+    opts: { size?: number; font?: typeof font; lineGap?: number } = {},
+  ) => {
+    const size = opts.size ?? 12;
+    const usedFont = opts.font ?? font;
+    const lineGap = opts.lineGap ?? 4;
+    const lines = text.split("\n");
+    for (const line of lines) {
+      page.drawText(line, { x: margin, y, size, font: usedFont });
+      y -= size + lineGap;
+      if (y < margin) break;
+    }
+  };
 
-  doc.end();
-
-  const buffer = await new Promise<Buffer>((resolve) => {
-    doc.on("end", () => resolve(Buffer.concat(chunks)));
+  addText(framework.title, { size: 18 });
+  addText("");
+  addText(`Created: ${new Date(framework.createdAt).toLocaleString()}`, {
+    size: 10,
+    font,
   });
+  addText("");
+  addText("LaTeX Source", { size: 12, font });
+  addText(framework.latex, { size: 9, font: mono, lineGap: 2 });
 
-  return new NextResponse(buffer, {
+  const pdfBytes = await pdf.save();
+
+  return new NextResponse(Buffer.from(pdfBytes), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `attachment; filename="${framework.title
